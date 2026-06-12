@@ -1,5 +1,12 @@
 <!DOCTYPE html>
-<html lang="fr">
+{#
+    data-turbo="false" desactive la navigation Turbo/Symfony UX sur l'ensemble
+    du site. Sans cela, les clics sur les liens du menu sont interceptes par
+    Turbo, ce qui peut provoquer des pages blanches apres navigation si les
+    ecouteurs JavaScript (Bootstrap, animations, etc.) ne sont pas reinitialises
+    correctement. On garde ainsi une navigation classique et fiable.
+#}
+<html lang="fr" data-turbo="false">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,6 +31,20 @@
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
+
+        {#
+            Securite d'affichage: si JavaScript est desactive, les elements
+            data-animate="fade-up" resteraient invisibles. Ce fallback les rend
+            visibles immediatement pour que le contenu soit toujours accessible.
+        #}
+        <noscript>
+            <style>
+                [data-animate="fade-up"] {
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
+            </style>
+        </noscript>
     </head>
     <body>
         {# Barre de navigation Bootstrap responsive.
