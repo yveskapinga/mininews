@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    # On active le theme de formulaire Bootstrap 5 pour que tous les formulaires
+    # Symfony heritent automatiquement des classes Bootstrap (form-control,
+    # form-check-input, form-label, btn, etc.).
+    form_themes: ['bootstrap_5_layout.html.twig']
+
+when@test:
+    twig:
+        strict_variables: true

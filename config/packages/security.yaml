@@ -1,0 +1,56 @@
+security:
+    # Le hasher "auto" choisit un algorithme moderne adapté à la version de PHP.
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    # Le provider indique à Symfony comment retrouver un utilisateur en base.
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    # ROLE_ADMIN hérite de ROLE_USER: un administrateur peut donc lire/commenter.
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+
+    firewalls:
+        # Le firewall dev laisse passer les fichiers du profiler et les assets.
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Firewall principal: formulaire de connexion classique Symfony.
+        main:
+            lazy: true
+            provider: app_user_provider
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                # Apres une connexion reussie, on ramene volontairement
+                # l'utilisateur vers la page d'accueil pedagogique /.
+                default_target_path: /
+                always_use_default_target_path: true
+                # Le token_id doit correspondre a csrf_token('authenticate')
+                # dans templates/security/login.html.twig.
+                enable_csrf: true
+                csrf_token_id: authenticate
+            logout:
+                path: app_logout
+                # Symfony Security attend une URL de redirection; / correspond
+                # a la route news_index et evite toute ambiguite avec un nom de route.
+                target: /
+
+    # Les règles sont lues de haut en bas: la première qui correspond gagne.
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/logout, roles: ROLE_USER }
+
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

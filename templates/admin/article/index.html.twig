@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des articles - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Tableau d'administration.
+
+        Cette page est protegee par #[IsGranted('ROLE_ADMIN')] dans le controleur,
+        donc le template suppose que l'utilisateur courant a les droits admin.
+    #}
+    <section class="mn-admin-header" data-animate="fade-up">
+        <div>
+            <p class="mn-eyebrow">Administration</p>
+            <h1>Articles</h1>
+        </div>
+        <a class="btn mn-btn mn-btn-primary" href="{{ path('admin_article_new') }}">Nouvel article</a>
+    </section>
+
+    <div class="table-responsive mn-admin-table" data-animate="fade-up">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Titre</th>
+                    <th>Statut</th>
+                    <th>Auteur</th>
+                    <th>Créé le</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for article in articles %}
+                    <tr>
+                        <td class="fw-semibold">{{ article.title }}</td>
+                        <td>
+                            {#
+                                article.published appelle isPublished() dans
+                                l'entite Article. On change la classe CSS selon
+                                l'etat pour afficher un badge different.
+                            #}
+                            <span class="mn-badge {{ article.published ? 'mn-badge-success' : 'mn-badge-muted' }}">
+                                {{ article.published ? 'Publié' : 'Brouillon' }}
+                            </span>
+                        </td>
+                        <td>{{ article.author.displayName }}</td>
+                        <td>{{ article.createdAt|date('d/m/Y') }}</td>
+                        <td class="mn-actions">
+                            {% if article.published %}
+                                <a class="btn mn-btn mn-btn-sm mn-btn-light" href="{{ path('news_show', { slug: article.slug }) }}">Voir</a>
+                            {% endif %}
+                            <a class="btn mn-btn mn-btn-sm mn-btn-light" href="{{ path('admin_article_edit', { id: article.id }) }}">Modifier</a>
+
+                            {#
+                                Formulaire de suppression en POST. data-confirm-delete
+                                est lu par assets/app.js pour afficher une confirmation.
+                            #}
+                            <form method="post" action="{{ path('admin_article_delete', { id: article.id }) }}" data-confirm-delete>
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_article_' ~ article.id) }}">
+                                <button type="submit" class="mn-link-danger">Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">Aucun article pour le moment.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

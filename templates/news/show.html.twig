@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ article.title }} - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Page de detail d'un article.
+
+        NewsController::show() fournit trois variables:
+        - article: le contenu de l'article.
+        - commentForm: le formulaire Symfony de commentaire.
+        - userReactions: dictionnaire [commentId => valeur] pour mettre en
+          evidence les boutons like/dislike deja cliques par l'utilisateur.
+    #}
+    <article class="mn-article-detail" data-animate="fade-up">
+        <a class="mn-back-link" href="{{ path('news_index') }}">← Retour aux actualités</a>
+        <h1>{{ article.title }}</h1>
+        <p class="mn-meta">
+            Par {{ article.author.displayName }} · {{ article.publishedAt ? article.publishedAt|date('d/m/Y H:i') : article.createdAt|date('d/m/Y H:i') }}
+        </p>
+        <p class="mn-lead">{{ article.excerpt }}</p>
+        <div class="mn-article-content">
+            {# nl2br transforme les retours a la ligne du texte en balises <br>. #}
+            {{ article.content|nl2br }}
+        </div>
+    </article>
+
+    <section class="mn-comments" id="commentaires" data-animate="fade-up">
+        <div class="mn-comments-title">
+            <h2>Commentaires</h2>
+            <span class="mn-comment-count">{{ article.comments|length }}</span>
+        </div>
+
+        {% if app.user %}
+            {#
+                Les helpers form_start/form_row/form_end generent le HTML du
+                formulaire, les erreurs, les valeurs et le token CSRF si necessaire.
+                Le theme Bootstrap 5 est active dans config/packages/twig.yaml.
+            #}
+            <div class="mn-comment-form">
+                {{ form_start(commentForm, { attr: { class: 'mb-0' } }) }}
+                    {{ form_row(commentForm.content, { attr: { placeholder: 'Écrivez un commentaire constructif...', rows: 3 } }) }}
+                    <button class="btn mn-btn mn-btn-primary" type="submit">Publier le commentaire</button>
+                {{ form_end(commentForm) }}
+            </div>
+        {% else %}
+            {# Un visiteur anonyme peut lire, mais doit se connecter pour poster. #}
+            <div class="mn-login-notice mb-4">
+                <a href="{{ path('app_login') }}">Connectez-vous</a> pour laisser un commentaire.
+            </div>
+        {% endif %}
+
+        <div class="mn-comment-list">
+            {# article.comments vient de la relation OneToMany dans Article. #}
+            {% for comment in article.comments %}
+                <article class="mn-comment-card">
+                    <div class="mn-comment-avatar" aria-hidden="true">
+                        {{ comment.author.displayName|first|upper }}
+                    </div>
+                    <div class="mn-comment-body">
+                        <div class="mn-comment-header">
+                            <span class="mn-comment-author">{{ comment.author.displayName }}</span>
+                            <time class="mn-comment-date" datetime="{{ comment.createdAt|date('c') }}">
+                                {{ comment.createdAt|date('d/m/Y H:i') }}
+                            </time>
+                        </div>
+                        <p class="mn-comment-text">{{ comment.content|nl2br }}</p>
+
+                        <div class="mn-comment-actions">
+                            {#
+                                On determine si le bouton est actif pour l'utilisateur
+                                courant, puis on desactive les reactions dans deux cas:
+                                visiteur anonyme (il doit se connecter) et auteur du
+                                commentaire (on ne peut pas voter pour soi-meme).
+                            #}
+                            {% set isOwnComment = app.user is not null and comment.author.id == app.user.id %}
+
+                            {# Bouton like. Le formulaire envoie un POST securise avec un token CSRF. #}
+                            {% set isLiked = userReactions[comment.id] is defined and userReactions[comment.id] == constant('App\\Entity\\CommentReaction::LIKE') %}
+                            <form method="post" action="{{ path('comment_react', { id: comment.id, type: 'like' }) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('react_comment_' ~ comment.id) }}">
+                                <button type="submit" class="mn-reaction-btn {{ isLiked ? 'is-active-like' : '' }}"
+                                        {% if app.user is null %}disabled title="Connectez-vous pour réagir"{% elseif isOwnComment %}disabled title="Vous ne pouvez pas réagir à votre propre commentaire"{% endif %}>
+                                    👍 <span>{{ comment.likeCount }}</span>
+                                </button>
+                            </form>
+
+                            {# Bouton dislike, avec la meme logique securisee. #}
+                            {% set isDisliked = userReactions[comment.id] is defined and userReactions[comment.id] == constant('App\\Entity\\CommentReaction::DISLIKE') %}
+                            <form method="post" action="{{ path('comment_react', { id: comment.id, type: 'dislike' }) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('react_comment_' ~ comment.id) }}">
+                                <button type="submit" class="mn-reaction-btn {{ isDisliked ? 'is-active-dislike' : '' }}"
+                                        {% if app.user is null %}disabled title="Connectez-vous pour réagir"{% elseif isOwnComment %}disabled title="Vous ne pouvez pas réagir à votre propre commentaire"{% endif %}>
+                                    👎 <span>{{ comment.dislikeCount }}</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            {% else %}
+                <div class="mn-empty-state">
+                    <p class="mb-0">Aucun commentaire pour le moment. Soyez le premier à réagir !</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

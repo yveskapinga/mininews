@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Formulaire de connexion gere par Symfony Security.
+
+        Contrairement aux formulaires ArticleType ou CommentType, celui-ci est
+        volontairement ecrit en HTML simple car le firewall attend les champs
+        _username, _password et _csrf_token. Les classes Bootstrap assurent
+        l'apparence propre et responsive.
+    #}
+    <section class="mn-auth-card" data-animate="fade-up">
+        <h1>Connexion</h1>
+
+        {% if error %}
+            {# messageKey est traduit dans le domaine security de Symfony. #}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="username" class="form-label">Email</label>
+                <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Mot de passe</label>
+                <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
+            </div>
+
+            {# Token CSRF obligatoire car enable_csrf=true dans security.yaml. #}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <div class="d-grid">
+                <button class="btn mn-btn mn-btn-primary" type="submit">Se connecter</button>
+            </div>
+        </form>
+
+        <p class="text-center mt-3 mb-0">
+            Pas encore de compte ? <a href="{{ path('app_register') }}">Créer un compte</a>
+        </p>
+    </section>
+{% endblock %}

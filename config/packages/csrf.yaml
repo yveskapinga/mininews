@@ -1,0 +1,24 @@
+# Configuration CSRF de MiniNews.
+#
+# CSRF signifie Cross-Site Request Forgery. Le principe: Symfony place un jeton
+# secret dans les formulaires sensibles, puis verifie ce jeton quand le formulaire
+# est soumis. Cela empeche un autre site de forcer le navigateur d'un utilisateur
+# connecte a envoyer une action a sa place.
+framework:
+    form:
+        csrf_protection:
+            # Les formulaires Symfony classiques, par exemple ceux crees avec
+            # createForm(), utilisent ce token_id par defaut.
+            token_id: submit
+
+    csrf_protection:
+        # On garde ici le mode CSRF stateful classique: les jetons sont lies a la
+        # session Symfony. C'est le fonctionnement le plus simple a comprendre
+        # pour une application pedagogique.
+        #
+        # Important: ne pas declarer authenticate dans stateless_token_ids ici.
+        # Le login de templates/security/login.html.twig envoie un token genere
+        # par csrf_token('authenticate'), et Symfony Security le valide avec la
+        # session. Si on active le mode stateless sans adapter tout le formulaire,
+        # le login peut echouer avec "Invalid CSRF token".
+        enabled: true

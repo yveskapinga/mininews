@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Page d'accueil de l'application.
+
+        Cette route reste / et garde le nom news_index. Elle sert de porte
+        d'entree pedagogique: elle presente le mini-blog, puis liste les articles
+        publies sous forme de cartes Bootstrap responsive.
+    #}
+    <section class="mn-hero" data-animate="fade-up">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <p class="mn-eyebrow">Travail pratique de programmation</p>
+                <h1>MiniNews, un mini-blog d'actualités développé avec Symfony 7</h1>
+                <p class="mn-hero-text">
+                    Cette application simule un petit système de News : les administrateurs
+                    publient des articles, tandis que les utilisateurs connectés peuvent
+                    les lire, commenter et réagir aux commentaires.
+                </p>
+
+                {#
+                    Les boutons changent selon l'etat de connexion. Un visiteur anonyme
+                    voit clairement comment se connecter ou creer un compte lecteur.
+                #}
+                <div class="mn-hero-actions">
+                    {% if app.user %}
+                        <a class="btn mn-btn mn-btn-primary" href="#articles" data-smooth-scroll>Voir les actualités</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn mn-btn mn-btn-light" href="{{ path('admin_article_index') }}">Gérer les articles</a>
+                        {% endif %}
+                    {% else %}
+                        <a class="btn mn-btn mn-btn-primary" href="{{ path('app_login') }}">Se connecter</a>
+                        <a class="btn mn-btn mn-btn-light" href="{{ path('app_register') }}">Créer un compte</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {#
+                Ce panneau resume les technologies du TP. Il est purement informatif
+                et aide l'etudiant a relier l'interface aux couches du code.
+            #}
+            <div class="col-lg-4 mt-4 mt-lg-0">
+                <aside class="mn-hero-panel" aria-label="Technologies utilisées">
+                    <strong>Stack pédagogique</strong>
+                    <ul>
+                        <li>Symfony 7 pour l'orchestration MVC</li>
+                        <li>PHP pour la logique serveur</li>
+                        <li>PostgreSQL pour la base de données relationnelle</li>
+                        <li>Twig pour les pages HTML dynamiques</li>
+                        <li>Bootstrap 5 pour l'interface responsive</li>
+                        <li>JavaScript pour les interactions côté navigateur</li>
+                    </ul>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    {#
+        Cartes interactives de presentation. Les attributs data-info-card sont lus
+        par assets/app.js pour ajouter une petite interaction visuelle au clic.
+    #}
+    <section class="row g-4 mb-5" aria-label="Fonctionnement de MiniNews">
+        <div class="col-md-4" data-animate="fade-up">
+            <article class="mn-feature-card" data-info-card>
+                <span class="mn-feature-number">01</span>
+                <h2>Administrateurs</h2>
+                <p>Ils créent, modifient, publient ou suppriment les articles depuis l'espace d'administration.</p>
+            </article>
+        </div>
+        <div class="col-md-4" data-animate="fade-up">
+            <article class="mn-feature-card" data-info-card>
+                <span class="mn-feature-number">02</span>
+                <h2>Lecteurs connectés</h2>
+                <p>Ils consultent les actualités publiées et participent à la discussion avec des commentaires.</p>
+            </article>
+        </div>
+        <div class="col-md-4" data-animate="fade-up">
+            <article class="mn-feature-card" data-info-card>
+                <span class="mn-feature-number">03</span>
+                <h2>Objectif du TP</h2>
+                <p>Comprendre comment Symfony organise les routes, contrôleurs, entités, formulaires, Twig et Doctrine.</p>
+            </article>
+        </div>
+    </section>
+
+    {#
+        Section des articles publies. Le controleur fournit deja uniquement les
+        articles publics grace a ArticleRepository::findPublished().
+    #}
+    <section id="articles" class="mb-4" data-animate="fade-up">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <p class="mn-eyebrow">Actualités</p>
+                <h2>Articles publiés</h2>
+            </div>
+            {% if not app.user %}
+                <a class="btn mn-btn mn-btn-light" href="{{ path('app_login') }}">Connexion pour commenter</a>
+            {% endif %}
+        </div>
+
+        <div class="row g-4">
+            {#
+                La boucle for parcourt les objets Article. Twig appelle les getters
+                automatiquement: article.title correspond a getTitle().
+            #}
+            {% for article in articles %}
+                <div class="col-md-6 col-lg-4">
+                    <article class="mn-article-card">
+                        {# Le filtre date formate un objet DateTimeImmutable pour l'ecran. #}
+                        <p class="mn-meta">
+                            Publié le {{ article.publishedAt ? article.publishedAt|date('d/m/Y H:i') : article.createdAt|date('d/m/Y') }}
+                            {% if article.author %}
+                                <span class="d-block">Par {{ article.author.displayName }}</span>
+                            {% endif %}
+                        </p>
+                        <h2><a href="{{ path('news_show', { slug: article.slug }) }}">{{ article.title }}</a></h2>
+                        <p>{{ article.excerpt }}</p>
+                        <a class="btn mn-btn mn-btn-light mt-auto" href="{{ path('news_show', { slug: article.slug }) }}">Lire l’article</a>
+                    </article>
+                </div>
+            {% else %}
+                {# Le bloc else d'une boucle Twig s'affiche quand la liste est vide. #}
+                <div class="col-12">
+                    <div class="mn-empty-state">
+                        <h2>Aucune actualité publiée</h2>
+                        <p>Connectez-vous en administrateur et publiez le premier article du TP.</p>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a class="btn mn-btn mn-btn-primary" href="{{ path('admin_article_new') }}">Publier un article</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Formulaire public pour creer un compte lecteur ROLE_USER.
+
+        registrationForm vient de RegistrationController. Les champs affiches ici
+        correspondent a RegistrationFormType, pas directement au HTML ecrit a la main.
+        Le theme Bootstrap 5 est active dans config/packages/twig.yaml.
+    #}
+    <section class="mn-auth-card" data-animate="fade-up">
+        <h1>Créer un compte lecteur</h1>
+
+        {{ form_start(registrationForm) }}
+            {# form_row genere label + champ + erreurs grace au theme Bootstrap 5. #}
+            {{ form_row(registrationForm.displayName) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.plainPassword) }}
+
+            <div class="d-grid">
+                <button class="btn mn-btn mn-btn-primary" type="submit">Créer le compte</button>
+            </div>
+        {{ form_end(registrationForm) }}
+
+        <p class="text-center mt-3 mb-0">
+            Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
+        </p>
+    </section>
+{% endblock %}

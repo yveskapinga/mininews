@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des utilisateurs - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Page d'administration des utilisateurs.
+
+        Elle sert a illustrer la gestion des roles Symfony. Un utilisateur normal
+        possede ROLE_USER; quand on ajoute ROLE_ADMIN, il peut acceder aux routes
+        protegees de l'administration.
+    #}
+    <section class="mn-admin-header" data-animate="fade-up">
+        <div>
+            <p class="mn-eyebrow">Administration</p>
+            <h1>Utilisateurs</h1>
+        </div>
+        <a class="btn mn-btn mn-btn-light" href="{{ path('admin_article_index') }}">Retour aux articles</a>
+    </section>
+
+    <div class="table-responsive mn-admin-table" data-animate="fade-up">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Nom affiché</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Créé le</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td class="fw-semibold">{{ user.displayName }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {# hasRole('ROLE_ADMIN') appelle la methode pedagogique de l'entite User. #}
+                            {% if user.hasRole('ROLE_ADMIN') %}
+                                <span class="mn-badge mn-badge-success">Administrateur</span>
+                            {% else %}
+                                <span class="mn-badge mn-badge-muted">Lecteur</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                        <td class="mn-actions">
+                            {% if user.hasRole('ROLE_ADMIN') %}
+                                <span class="text-muted">Déjà admin</span>
+                            {% else %}
+                                {#
+                                    Promouvoir modifie les roles en base: on utilise
+                                    donc POST + token CSRF, pas un simple lien GET.
+                                #}
+                                <form method="post" action="{{ path('admin_user_promote', { id: user.id }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('promote_user_' ~ user.id) }}">
+                                    <button type="submit" class="btn mn-btn mn-btn-sm mn-btn-primary">Promouvoir admin</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">Aucun utilisateur pour le moment.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

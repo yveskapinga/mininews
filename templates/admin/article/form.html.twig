@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ title }} - MiniNews{% endblock %}
+
+{% block body %}
+    {#
+        Formulaire reutilise pour deux routes: creation et modification.
+
+        Le controleur choisit le titre et le texte du bouton avec les variables
+        title et buttonLabel. La variable form contient une vue de ArticleType.
+        Le theme Bootstrap 5 est active dans config/packages/twig.yaml.
+    #}
+    <section class="mn-form-page" data-animate="fade-up">
+        <a class="mn-back-link" href="{{ path('admin_article_index') }}">← Retour à l’administration</a>
+        <h1>{{ title }}</h1>
+
+        {{ form_start(form, { attr: { class: 'mt-4' } }) }}
+            {# Chaque form_row affiche label + widget + erreurs + aide du champ. #}
+            {{ form_row(form.title) }}
+            {{ form_row(form.excerpt) }}
+            {{ form_row(form.content) }}
+            {{ form_row(form.isPublished) }}
+            <button class="btn mn-btn mn-btn-primary" type="submit">{{ buttonLabel }}</button>
+        {{ form_end(form) }}
+    </section>
+{% endblock %}
