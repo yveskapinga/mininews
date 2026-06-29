@@ -1,0 +1,780 @@
+/*
+ * Feuille de styles de MiniNews.
+ *
+ * L'application repose desormais sur Bootstrap 5 (importe dans assets/app.js).
+ * Ce fichier ajoute une palette "etudiante" vivante, quelques animations et des
+ * ajustements specifiques aux composants pedagogiques du TP.
+ */
+
+/* --------------------------------------------------------------------------
+ * 1. Variables de couleurs etudiantes
+ * -------------------------------------------------------------------------- */
+:root {
+    /* Couleurs principales: bleu petrole serieux, orange chaleureux. */
+    --mn-primary: #176b87;
+    --mn-primary-dark: #0f4f63;
+    --mn-primary-light: #e8f4f8;
+    --mn-accent: #d9822b;
+    --mn-accent-light: #fff4e6;
+
+    /* Neutres chauds pour une interface agrable a lire. */
+    --mn-page: #f7f4ef;
+    --mn-surface: #ffffff;
+    --mn-text: #1f2937;
+    --mn-muted: #6b7280;
+    --mn-border: #e5e0d8;
+
+    /* Etats. */
+    --mn-success: #0f766e;
+    --mn-success-bg: #d1fae5;
+    --mn-danger: #b91c1c;
+    --mn-danger-bg: #fee2e2;
+    --mn-warning: #92400e;
+    --mn-warning-bg: #fef3c7;
+
+    /* Rayons et ombres. */
+    --mn-radius: 14px;
+    --mn-shadow: 0 10px 30px rgba(23, 107, 135, 0.08);
+    --mn-shadow-hover: 0 16px 40px rgba(23, 107, 135, 0.14);
+
+    /* Durees d'animation. */
+    --mn-transition: 0.25s ease;
+}
+
+/* --------------------------------------------------------------------------
+ * 2. Corps de page et typographie
+ * -------------------------------------------------------------------------- */
+body {
+    background-color: var(--mn-page);
+    color: var(--mn-text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--mn-primary-dark);
+    font-weight: 700;
+}
+
+a {
+    color: var(--mn-primary);
+    text-decoration: none;
+    transition: color var(--mn-transition);
+}
+
+a:hover {
+    color: var(--mn-accent);
+}
+
+/* --------------------------------------------------------------------------
+ * 3. Barre de navigation responsive
+ * -------------------------------------------------------------------------- */
+.mn-navbar {
+    background: linear-gradient(135deg, var(--mn-primary) 0%, var(--mn-primary-dark) 100%);
+    box-shadow: var(--mn-shadow);
+}
+
+.mn-navbar .navbar-brand {
+    color: #fff;
+    font-weight: 800;
+    font-size: 1.35rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.mn-navbar .navbar-brand:hover {
+    color: var(--mn-accent-light);
+}
+
+.mn-navbar .navbar-brand img {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.mn-navbar .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.45rem 0.85rem;
+    transition: background-color var(--mn-transition), color var(--mn-transition);
+}
+
+.mn-navbar .nav-link:hover,
+.mn-navbar .nav-link:focus {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.mn-navbar .navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+.mn-navbar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.mn-nav-user {
+    color: var(--mn-accent-light);
+    font-weight: 600;
+    padding: 0.45rem 0.85rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 4. Conteneur principal
+ * -------------------------------------------------------------------------- */
+.mn-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 4rem;
+}
+
+@media (min-width: 768px) {
+    .mn-page-container {
+        padding: 2.5rem 1.5rem 5rem;
+    }
+}
+
+/* --------------------------------------------------------------------------
+ * 5. Boutons personnalises (complement de Bootstrap)
+ * -------------------------------------------------------------------------- */
+.mn-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.55rem 1.15rem;
+    transition: transform var(--mn-transition), box-shadow var(--mn-transition), background-color var(--mn-transition);
+    border: none;
+}
+
+.mn-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--mn-shadow-hover);
+}
+
+.mn-btn-primary {
+    background-color: var(--mn-primary);
+    color: #fff;
+}
+
+.mn-btn-primary:hover {
+    background-color: var(--mn-primary-dark);
+    color: #fff;
+}
+
+.mn-btn-accent {
+    background-color: var(--mn-accent);
+    color: #fff;
+}
+
+.mn-btn-accent:hover {
+    background-color: #c06e1f;
+    color: #fff;
+}
+
+.mn-btn-light {
+    background-color: #fff;
+    color: var(--mn-primary);
+    border: 1px solid var(--mn-border);
+}
+
+.mn-btn-light:hover {
+    background-color: var(--mn-primary-light);
+    color: var(--mn-primary-dark);
+}
+
+.mn-btn-danger {
+    background-color: var(--mn-danger);
+    color: #fff;
+}
+
+.mn-btn-danger:hover {
+    background-color: #991b1b;
+    color: #fff;
+}
+
+.mn-btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+ * 6. Hero de la page d'accueil
+ * -------------------------------------------------------------------------- */
+.mn-hero {
+    background: linear-gradient(135deg, var(--mn-primary-light) 0%, #fff 100%);
+    border-radius: var(--mn-radius);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--mn-shadow);
+    border: 1px solid var(--mn-border);
+}
+
+@media (min-width: 768px) {
+    .mn-hero {
+        padding: 3rem;
+    }
+}
+
+.mn-eyebrow {
+    color: var(--mn-accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    margin-bottom: 0.75rem;
+}
+
+.mn-hero h1 {
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.mn-hero-text {
+    color: var(--mn-muted);
+    font-size: 1.1rem;
+    max-width: 700px;
+}
+
+.mn-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.mn-hero-panel {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+    border-left: 4px solid var(--mn-accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.mn-hero-panel ul {
+    margin-bottom: 0;
+    padding-left: 1.2rem;
+}
+
+.mn-hero-panel li {
+    margin-bottom: 0.35rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 7. Cartes fonctionnalites et articles
+ * -------------------------------------------------------------------------- */
+.mn-feature-card,
+.mn-article-card {
+    background: var(--mn-surface);
+    border: 1px solid var(--mn-border);
+    border-radius: var(--mn-radius);
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform var(--mn-transition), box-shadow var(--mn-transition);
+    cursor: pointer;
+}
+
+.mn-feature-card:hover,
+.mn-article-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--mn-shadow-hover);
+}
+
+.mn-feature-card.is-active {
+    border-color: var(--mn-primary);
+    box-shadow: 0 0 0 3px rgba(23, 107, 135, 0.15);
+}
+
+.mn-feature-number {
+    display: inline-block;
+    background: var(--mn-accent-light);
+    color: var(--mn-accent);
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    margin-bottom: 0.75rem;
+}
+
+.mn-article-card h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.mn-article-card h2 a {
+    color: var(--mn-primary-dark);
+}
+
+.mn-article-card h2 a:hover {
+    color: var(--mn-accent);
+}
+
+.mn-article-card .mn-meta {
+    color: var(--mn-muted);
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.mn-article-card p {
+    color: var(--mn-muted);
+}
+
+/* --------------------------------------------------------------------------
+ * 8. Page de detail d'article
+ * -------------------------------------------------------------------------- */
+.mn-article-detail {
+    background: var(--mn-surface);
+    border-radius: var(--mn-radius);
+    padding: 2rem;
+    box-shadow: var(--mn-shadow);
+    border: 1px solid var(--mn-border);
+}
+
+@media (min-width: 768px) {
+    .mn-article-detail {
+        padding: 3rem;
+    }
+}
+
+.mn-article-detail h1 {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    margin-bottom: 0.75rem;
+}
+
+.mn-article-detail .mn-meta {
+    color: var(--mn-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+}
+
+.mn-article-detail .mn-lead {
+    font-size: 1.2rem;
+    color: var(--mn-primary);
+    font-weight: 500;
+    border-left: 4px solid var(--mn-accent);
+    padding-left: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.mn-article-content {
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.mn-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+/* --------------------------------------------------------------------------
+ * 9. Section commentaires compacte et likes/dislikes
+ * -------------------------------------------------------------------------- */
+.mn-comments {
+    margin-top: 2rem;
+}
+
+.mn-comments-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.mn-comment-count {
+    background: var(--mn-primary-light);
+    color: var(--mn-primary-dark);
+    font-size: 0.85rem;
+    font-weight: 700;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+}
+
+.mn-comment-form {
+    background: var(--mn-surface);
+    border-radius: var(--mn-radius);
+    padding: 1.25rem;
+    border: 1px solid var(--mn-border);
+    margin-bottom: 1.5rem;
+}
+
+.mn-comment-list {
+    /* Limite la hauteur pour permettre de scroller quand il y a beaucoup de
+       commentaires, et offre une navigation plus fluide. */
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Scrollbar custom leger pour navigateurs WebKit. */
+.mn-comment-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mn-comment-list::-webkit-scrollbar-thumb {
+    background-color: var(--mn-border);
+    border-radius: 4px;
+}
+
+.mn-comment-card {
+    display: flex;
+    gap: 1rem;
+    background: var(--mn-surface);
+    border: 1px solid var(--mn-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    transition: box-shadow var(--mn-transition);
+}
+
+.mn-comment-card:hover {
+    box-shadow: var(--mn-shadow);
+}
+
+.mn-comment-avatar {
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mn-primary) 0%, var(--mn-accent) 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.mn-comment-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.mn-comment-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-bottom: 0.35rem;
+}
+
+.mn-comment-author {
+    font-weight: 700;
+    color: var(--mn-primary-dark);
+}
+
+.mn-comment-date {
+    font-size: 0.8rem;
+    color: var(--mn-muted);
+}
+
+.mn-comment-text {
+    color: var(--mn-text);
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+}
+
+.mn-comment-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.mn-reaction-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: #fff;
+    border: 1px solid var(--mn-border);
+    border-radius: 20px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--mn-muted);
+    transition: all var(--mn-transition);
+}
+
+.mn-reaction-btn:hover {
+    background: var(--mn-primary-light);
+    border-color: var(--mn-primary);
+    color: var(--mn-primary);
+}
+
+.mn-reaction-btn.is-active-like {
+    background: var(--mn-success-bg);
+    border-color: var(--mn-success);
+    color: var(--mn-success);
+}
+
+.mn-reaction-btn.is-active-dislike {
+    background: var(--mn-danger-bg);
+    border-color: var(--mn-danger);
+    color: var(--mn-danger);
+}
+
+.mn-reaction-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.mn-login-notice {
+    background: var(--mn-accent-light);
+    border-radius: 10px;
+    padding: 1rem;
+    color: var(--mn-warning);
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+ * 10. Formulaires d'authentification et admin
+ * -------------------------------------------------------------------------- */
+.mn-auth-card,
+.mn-form-page {
+    background: var(--mn-surface);
+    border-radius: var(--mn-radius);
+    padding: 2rem;
+    max-width: 520px;
+    margin: 2rem auto;
+    box-shadow: var(--mn-shadow);
+    border: 1px solid var(--mn-border);
+}
+
+.mn-form-page {
+    max-width: 760px;
+}
+
+.mn-auth-card h1,
+.mn-form-page h1 {
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.mn-form-page .mn-back-link {
+    display: block;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 11. Tableaux d'administration
+ * -------------------------------------------------------------------------- */
+.mn-admin-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.mn-admin-table {
+    background: var(--mn-surface);
+    border-radius: var(--mn-radius);
+    overflow: hidden;
+    box-shadow: var(--mn-shadow);
+    border: 1px solid var(--mn-border);
+}
+
+.mn-admin-table th {
+    background-color: var(--mn-primary-light);
+    color: var(--mn-primary-dark);
+    font-weight: 700;
+    border-bottom: 2px solid var(--mn-border);
+}
+
+.mn-admin-table td,
+.mn-admin-table th {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.mn-admin-table tbody tr:hover {
+    background-color: #faf8f5;
+}
+
+.mn-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.mn-actions form {
+    margin: 0;
+}
+
+.mn-link-danger {
+    background: none;
+    border: none;
+    color: var(--mn-danger);
+    font-weight: 600;
+    padding: 0;
+    cursor: pointer;
+}
+
+.mn-link-danger:hover {
+    color: #991b1b;
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+ * 12. Badges
+ * -------------------------------------------------------------------------- */
+.mn-badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    border-radius: 20px;
+}
+
+.mn-badge-success {
+    background: var(--mn-success-bg);
+    color: var(--mn-success);
+}
+
+.mn-badge-muted {
+    background: #f3f4f6;
+    color: var(--mn-muted);
+}
+
+/* --------------------------------------------------------------------------
+ * 13. Messages flash auto-disparaissants
+ * -------------------------------------------------------------------------- */
+.mn-flash {
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.mn-flash-fade-out {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+.mn-flash-success {
+    background: var(--mn-success-bg);
+    color: var(--mn-success);
+    border-color: #a7f3d0;
+}
+
+.mn-flash-error {
+    background: var(--mn-danger-bg);
+    color: var(--mn-danger);
+    border-color: #fecaca;
+}
+
+.mn-flash-warning {
+    background: var(--mn-warning-bg);
+    color: var(--mn-warning);
+    border-color: #fde68a;
+}
+
+.mn-flash-info {
+    background: var(--mn-primary-light);
+    color: var(--mn-primary-dark);
+    border-color: #bae6fd;
+}
+
+/* --------------------------------------------------------------------------
+ * 14. Animations
+ * -------------------------------------------------------------------------- */
+[data-animate="fade-up"] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+[data-animate="fade-up"].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --------------------------------------------------------------------------
+ * 15. Etats vides
+ * -------------------------------------------------------------------------- */
+.mn-empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--mn-surface);
+    border-radius: var(--mn-radius);
+    border: 2px dashed var(--mn-border);
+}
+
+.mn-empty-state h2 {
+    margin-bottom: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+ * 16. Responsive: ajustements mobile
+ * -------------------------------------------------------------------------- */
+@media (max-width: 576px) {
+    .mn-page-container {
+        padding: 1rem 0.75rem 3rem;
+    }
+
+    .mn-hero {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .mn-hero-actions {
+        flex-direction: column;
+    }
+
+    .mn-hero-actions .mn-btn {
+        width: 100%;
+    }
+
+    .mn-article-detail,
+    .mn-auth-card,
+    .mn-form-page {
+        padding: 1.25rem;
+        border-radius: 12px;
+    }
+
+    .mn-comment-card {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .mn-comment-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+    }
+
+    .mn-admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mn-admin-table th,
+    .mn-admin-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .mn-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+}
